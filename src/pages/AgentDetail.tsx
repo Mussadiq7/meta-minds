@@ -9,6 +9,8 @@ import { useParams } from "react-router-dom";
 import { Star, Download, Verified, Send, Upload, Flag, Zap } from "lucide-react";
 import { useState } from "react";
 import { AGENTS } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import React from "react";
 
 const AgentDetail = () => {
   const { id } = useParams();
@@ -19,6 +21,7 @@ const AgentDetail = () => {
     { type: "bot", content: "Hello! I'm CustomerCare Pro. How can I help you today?" }
   ]);
   const [loadingResponse, setLoadingResponse] = useState(false);
+  const { toast } = useToast();
 
   const handleSendMessage = async () => {
     if (message.trim()) {
@@ -59,6 +62,13 @@ const AgentDetail = () => {
     }
   };
 
+  const handleDeploy = () => {
+    toast({
+      title: "AI Agent successfully deployed!",
+      description: `${agent.name} is now live and ready to use.`,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -85,10 +95,12 @@ const AgentDetail = () => {
                         <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
                         <span className="font-medium">{agent.stats.successRate}%</span>
                       </div>
-                      <div className="flex items-center">
-                        <Download className="h-4 w-4 mr-1" />
-                        <span>{typeof agent.stats.uses !== 'undefined' ? `${agent.stats.uses} uses` : 'N/A uses'}</span>
-                      </div>
+                      {typeof agent.stats.uses !== 'undefined' && (
+                        <div className="flex items-center">
+                          <Download className="h-4 w-4 mr-1" />
+                          <span>{agent.stats.uses} uses</span>
+                        </div>
+                      )}
                       <Badge>Customer Service</Badge>
                     </div>
                   </div>
@@ -104,8 +116,8 @@ const AgentDetail = () => {
               </p>
 
               <div className="flex space-x-3">
-                <Button className="bg-gradient-to-r from-blue-600 to-purple-600">
-                  <Zap className="h-4 w-4 mr-2" />
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600" onClick={handleDeploy}>
+                  <Zap className="h-4 w-4 mr-2 animate-pulse" />
                   Use Now
                 </Button>
                 <Button variant="outline">
@@ -222,7 +234,10 @@ const AgentDetail = () => {
             <div className="bg-card rounded-lg p-6 border">
               <h3 className="font-semibold mb-4">Quick Actions</h3>
               <div className="space-y-3">
-                <Button className="w-full">Use Now</Button>
+                <Button className="w-full" onClick={handleDeploy}>
+                  <Zap className="h-4 w-4 mr-2 animate-pulse" />
+                  Deploy Now
+                </Button>
                 <Button variant="outline" className="w-full">Stake JUP</Button>
                 <Button variant="outline" className="w-full">Add to Favorites</Button>
               </div>

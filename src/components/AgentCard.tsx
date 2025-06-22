@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, Users, Download, Verified, ExternalLink, Heart } from "lucide-react";
+import { Star, Users, Download, Verified, ExternalLink, Heart, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 interface AgentCardProps {
   name: string;
@@ -25,6 +26,23 @@ const AgentCard = ({ name, description, category, rating, downloads, verified, p
     const newLiked = !liked;
     setLiked(newLiked);
     localStorage.setItem(`liked-agent-${id}`, newLiked.toString());
+  };
+  const { toast } = useToast();
+  const handleDeploy = () => {
+    toast({
+      title: (
+        <div className="flex flex-col items-center justify-center animate-bounceIn">
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-full p-4 mb-3 animate-bounce">
+            <Zap className="h-10 w-10 text-white animate-pulse" />
+          </div>
+          <span className="text-2xl font-bold text-primary text-center">AI Agent Deployed!</span>
+        </div>
+      ) as React.ReactNode,
+      description: (
+        <div className="text-lg text-center text-muted-foreground mt-2">{name} is now live and ready to use.</div>
+      ) as React.ReactNode,
+      className: "max-w-lg mx-auto bg-gradient-to-br from-blue-50 to-purple-100 border-2 border-blue-300 shadow-2xl scale-105 animate-fadeInUp",
+    });
   };
   return (
     <div className="group relative overflow-hidden rounded-2xl border bg-card p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-blue-200">
@@ -83,8 +101,8 @@ const AgentCard = ({ name, description, category, rating, downloads, verified, p
         
         {/* Action buttons */}
         <div className="flex space-x-3">
-          <Button className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300">
-            Deploy Now
+          <Button className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 text-lg py-3" onClick={handleDeploy}>
+            <Zap className="h-5 w-5 mr-2 animate-pulse" /> Deploy Now
           </Button>
           <Link to={`/agent/${name.toLowerCase().replace(/\s+/g, '-')}`}>
             <Button variant="outline" size="icon" className="hover:bg-gray-50 transition-colors">
